@@ -8,7 +8,7 @@
 #include "Delegate.h"
 using namespace std;
 
-class Tar
+class UartTar
 {
 protected:
     void AnalysisReadList(uint8_t data);

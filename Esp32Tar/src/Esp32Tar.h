@@ -3,7 +3,7 @@
 #include "Tar.h"
 #include <Arduino.h>
 
-class Esp32Tar : public Tar
+class Esp32Tar : public UartTar
 {
 public:
     Esp32Tar(void);

@@ -1,6 +1,6 @@
-#include "Tar.h"
+#include "UartTar.h"
 
-void Tar::DetectFrameHeader(void)
+void UartTar::DetectFrameHeader(void)
 {
     if ((m_newData == 85) && (m_oldData == 85))
     {
@@ -8,7 +8,7 @@ void Tar::DetectFrameHeader(void)
     }
 }
 
-void Tar::GetFrameLength(void)
+void UartTar::GetFrameLength(void)
 {
     m_receiveCount = m_newData;
     //如果数据长度是85，会导致帧重启，所以使用0代替85，数据长度不可能
@@ -19,7 +19,7 @@ void Tar::GetFrameLength(void)
     }
 }
 
-bool Tar::IsInsertedZero(void)
+bool UartTar::IsInsertedZero(void)
 {
     if (m_newData == 0 && m_oldData == 85)
     {
@@ -28,7 +28,7 @@ bool Tar::IsInsertedZero(void)
     return false;
 }
 
-void Tar::GetData(void)
+void UartTar::GetData(void)
 {
     if (!IsInsertedZero())
     {
@@ -44,7 +44,7 @@ void Tar::GetData(void)
     }
 }
 
-void Tar::AnalysisReadList(uint8_t data)
+void UartTar::AnalysisReadList(uint8_t data)
 {
     m_newData = data;
     DetectFrameHeader();
@@ -75,7 +75,7 @@ void Tar::AnalysisReadList(uint8_t data)
     m_oldData = m_newData;
 }
 
-void Tar::PushFrameHeader(void)
+void UartTar::PushFrameHeader(void)
 {
     if (m_sendCount == 85)
     {
@@ -90,7 +90,7 @@ void Tar::PushFrameHeader(void)
     m_sendBuff.push_front(85);
 }
 
-void Tar::PushData(uint8_t data)
+void UartTar::PushData(uint8_t data)
 {
     /*如果数据域中出现85*/
     if (data == 85)
@@ -105,7 +105,7 @@ void Tar::PushData(uint8_t data)
     m_sendCount++;
 }
 
-void Tar::StartSend(void)
+void UartTar::StartSend(void)
 {
     auto it = m_sendBuff.begin();
     while (it != m_sendBuff.end())
@@ -119,7 +119,7 @@ void Tar::StartSend(void)
     }
 }
 
-void Tar::tar(uint8_t data, bool bIsEnd)
+void UartTar::tar(uint8_t data, bool bIsEnd)
 {
     if (bIsEnd)
     {
@@ -132,7 +132,7 @@ void Tar::tar(uint8_t data, bool bIsEnd)
     }
 }
 
-void Tar::sendData(const uint8_t *buff, uint16_t size)
+void UartTar::sendData(const uint8_t *buff, uint16_t size)
 {
     for (size_t i = 0; i < size; i++)
     {
