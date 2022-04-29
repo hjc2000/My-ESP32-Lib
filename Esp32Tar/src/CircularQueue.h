@@ -59,8 +59,8 @@ private:
     private:
         CircularQueue<T> *m_pQueue = nullptr; //指向要访问的对象
     };
-    friend class QueueIndex;//声明为友元类，这样才能访问 CircularQueue 的私有成员
-    QueueIndex m_head = QueueIndex(this), m_tail = QueueIndex(this);//队列的头部索引和尾部索引
+    friend class QueueIndex;                                         //声明为友元类，这样才能访问 CircularQueue 的私有成员
+    QueueIndex m_head = QueueIndex(this), m_tail = QueueIndex(this); //队列的头部索引和尾部索引
 
 public: //向用户提供的对循环队列操作的方法
     /// <summary>
@@ -117,7 +117,6 @@ private:
     /// </summary>
     uint8_t m_numOfData = 0;
 };
-
 
 template <typename T>
 bool CircularQueue<T>::push_back(T data)
