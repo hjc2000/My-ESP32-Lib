@@ -1,3 +1,6 @@
 [submodule "PubSubClient"]
 	path = PubSubClient
 	url = https://github.com/knolleary/pubsubclient.git
+[submodule "StringSpliter"]
+	path = StringSpliter
+	url = https://github.com/aharshac/StringSplitter.git
