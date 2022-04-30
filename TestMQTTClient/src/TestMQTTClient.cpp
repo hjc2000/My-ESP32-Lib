@@ -49,7 +49,9 @@ void TestMQTTClient::MqttLog(String str)
  */
 void TestMQTTClient::OnReceive(char *topic, uint8_t *payload, unsigned int length)
 {
-    if (String(topic) == "esp32/command/msp")
+    String topicStr = String(topic);
+
+    if (topicStr == "esp32/command/msp")
     {
         pTar->sendData(payload, length);
     }
