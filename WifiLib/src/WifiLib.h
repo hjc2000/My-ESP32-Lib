@@ -14,6 +14,8 @@ public:
     static void connectThread(void *pObj);
 
 private:
+    // String m_ssid = "HUAWEI-5CHJTT_HiLink";
+    // String m_password = "moter411";
     String m_ssid = "Hjc";
     String m_password = "123456789";
 };

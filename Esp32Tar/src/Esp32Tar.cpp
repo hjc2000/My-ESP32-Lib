@@ -73,6 +73,7 @@ void Esp32Tar::OnReceive(CircularQueue<uint8_t> &data)
         {
             temperature = -f_getDoubleTemperature(payload);
         }
+
         pMqttClient->Publish("esp32/temperature", (uint8_t *)&temperature, 8);
     }
     }

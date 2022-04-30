@@ -1,6 +1,7 @@
 #ifndef ESP32TAR_H
 #define ESP32TAR_H
 #include "UartTar.h"
+#include "DataBind.h"
 
 class Esp32Tar : public UartTar
 {
