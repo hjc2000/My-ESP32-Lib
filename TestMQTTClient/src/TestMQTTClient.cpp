@@ -1,5 +1,6 @@
 #include "TestMQTTClient.h"
 #include "Esp32Tar.h"
+#include "StringSplitter.h"
 
 TestMQTTClient *pMqttClient = nullptr;
 
@@ -50,6 +51,13 @@ void TestMQTTClient::MqttLog(String str)
 void TestMQTTClient::OnReceive(char *topic, uint8_t *payload, unsigned int length)
 {
     String topicStr = String(topic);
+    StringSplitter subTopics(topicStr, '/', 10);
+    int count = subTopics.getItemCount();
+    Serial.println(count);
+    for (int i = 0; i < count; i++)
+    {
+        Serial.println(subTopics.getItemAtIndex(i));
+    }
 
     if (topicStr == "esp32/command/msp")
     {
