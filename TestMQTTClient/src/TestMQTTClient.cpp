@@ -7,6 +7,7 @@ TestMQTTClient *pMqttClient = nullptr;
 TestMQTTClient::TestMQTTClient(void)
 {
     pMqttClient = this;
+    InitCommandMap();
 }
 
 /**
@@ -29,16 +30,6 @@ void TestMQTTClient::OnConnected(void)
 }
 
 /**
- * @brief 将mqtt的主题log作为打印日志的地方
- *
- * @param str 要被打印的内容
- */
-void TestMQTTClient::MqttLog(String str)
-{
-    Publish("log", str);
-}
-
-/**
  * @brief 收到订阅的主题的数据后被回调
  *
  * @param topic 主题。C风格的字符串
@@ -53,14 +44,28 @@ void TestMQTTClient::OnReceive(char *topic, uint8_t *payload, unsigned int lengt
     String topicStr = String(topic);
     StringSplitter subTopics(topicStr, '/', 10);
     int count = subTopics.getItemCount();
-    Serial.println(count);
-    for (int i = 0; i < count; i++)
+    if (count >= 3)
     {
-        Serial.println(subTopics.getItemAtIndex(i));
+        //至少要3级子主题
+        int index = 0;
+        if (subTopics.getItemAtIndex(index++) == "esp32")
+        {
+            if (subTopics.getItemAtIndex(index++) == "command")
+            {
+                auto it = m_commandMap.find(subTopics.getItemAtIndex(index++));
+                if (it != m_commandMap.end())
+                {
+                    (it->second)(payload, length);
+                }
+            }
+        }
     }
+}
 
-    if (topicStr == "esp32/command/msp")
+void TestMQTTClient::InitCommandMap(void)
+{
+    m_commandMap["msp"] = [](uint8_t *payload, uint32_t length) -> void
     {
         pTar->sendData(payload, length);
-    }
+    };
 }

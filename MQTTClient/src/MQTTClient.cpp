@@ -68,7 +68,7 @@ void MQTTClient::ConnectToMQTTServer(void)
         {
             for (uint8_t i = 0; i < 5; i++)
             {
-                if (m_pPubSubClient->connect(clientId.c_str()))
+                if (m_pPubSubClient->connect(clientId.c_str(), "hjc", "123456"))
                 {
                     return true;
                 }
