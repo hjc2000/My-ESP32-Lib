@@ -1,6 +1,6 @@
 #ifndef MQTTClient_h
 #define MQTTClient_h
-#include "MQTTClient.h"
+#include <MQTTClient.h>
 #include <map>
 
 class TestMQTTClient : public MQTTClient

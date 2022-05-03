@@ -1,6 +1,6 @@
-#include "TestMQTTClient.h"
-#include "Esp32Tar.h"
-#include "StringSplitter.h"
+#include <TestMQTTClient.h>
+#include <Esp32Tar.h>
+#include <StringSplitter.h>
 
 TestMQTTClient *pMqttClient = nullptr;
 
@@ -18,7 +18,7 @@ void TestMQTTClient::OnConnected(void)
     //连接成功后订阅主题
     if (m_pPubSubClient->connected())
     {
-        if (Subscribe("esp32/command/#"))
+        if (Subscribe(GetClientId() + "/command/#"))
         {
             Serial.println("订阅成功");
         }
@@ -48,7 +48,7 @@ void TestMQTTClient::OnReceive(char *topic, uint8_t *payload, unsigned int lengt
     {
         //至少要3级子主题
         int index = 0;
-        if (subTopics.getItemAtIndex(index++) == "esp32")
+        if (subTopics.getItemAtIndex(index++) == GetClientId())
         {
             if (subTopics.getItemAtIndex(index++) == "command")
             {

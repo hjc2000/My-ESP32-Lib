@@ -31,38 +31,13 @@ MQTTClient::~MQTTClient(void)
     delete m_pWifiClient;
 }
 
-/**
- * @brief 将mqtt的接收回调函数的形参传递给该方法，可以得到一个格式化
- * 的字符串，格式为 【主题：xxxx 内容：xxxx】
- *
- * @param topic
- * @param payload
- * @param length
- * @return String
- */
-String MQTTClient::FormateMqttContext(char *topic, uint8_t *payload, unsigned int length)
-{
-    String str = "主题：" + String(topic) + " 内容：";
-    payload[length] = '\0';
-    str = str + (char *)payload;
-    return str;
-}
-
 //该方法用于连接到MQTT服务器
 void MQTTClient::ConnectToMQTTServer(void)
 {
     /*不能在wifi没有连接的情况下连接MQTT*/
     if (WiFi.status() == WL_CONNECTED)
     {
-        /*用来提供MQTT的客户端ID，通过这种途径为该类被实例化多次，建立多个MQTT
-        连接提供了可能*/
-        auto getClientId = []() -> String
-        {
-            static uint16_t count = 0;
-            return "esp32-" + WiFi.macAddress() + "-" + count++;
-        };
-
-        String clientId = getClientId();
+        String clientId = GetClientId();
         //尝试进行数次连接并返回结果
         auto tryConnect = [this, clientId]() -> bool
         {

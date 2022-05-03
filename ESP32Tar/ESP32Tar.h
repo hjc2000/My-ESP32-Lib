@@ -1,12 +1,11 @@
-#ifndef ESP32TAR_H
-#define ESP32TAR_H
-#include "UartTar.h"
-#include "DataBind.h"
+#ifndef ESP32Tar_h
+#define ESP32Tar_h
+#include <UartTar.h>
 
-class Esp32Tar : public UartTar
+class ESP32Tar : public UartTar
 {
 public:
-    Esp32Tar(void);
+    ESP32Tar(void);
 
 protected:
     void Init(void) override;
@@ -18,5 +17,5 @@ protected:
 public:
     static void handle(void *pParam);
 };
-extern Esp32Tar *pTar;
-#endif // ESP32TAR_H
+extern ESP32Tar *pTar;
+#endif // ESP32Tar_h

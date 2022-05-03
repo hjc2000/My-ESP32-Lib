@@ -1,11 +1,11 @@
-#ifndef TAR_H
-#define TAR_H
+#ifndef UartTar_h
+#define UartTar_h
 
 #include <stdint.h>
 #include <list>
-#include "CircularQueue.h"
+#include <CircularQueue.h>
 #include <functional>
-#include "Delegate.h"
+#include <Delegate.h>
 using namespace std;
 
 class UartTar
@@ -97,4 +97,5 @@ public:
     //向串口发送数据
     void sendData(const uint8_t *buff, uint16_t size);
 };
-#endif // TAR_H
+
+#endif // UartTar_h

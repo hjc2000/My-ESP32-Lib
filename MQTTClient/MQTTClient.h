@@ -18,12 +18,45 @@ class MQTTClient
 public:
     MQTTClient(void);
     ~MQTTClient(void);
+    /**
+     * @brief 从第2个子主题发布消息。第一个子主题被自动设置为客户端ID。
+     * 禁止主题以斜杠开头
+     *
+     * @param topic 主题
+     * @param msg 字符串形式的载荷
+     */
+    void PublishFrom_2th_SubTopic(String topic, String msg)
+    {
+        topic = GetClientId() + "/" + topic;
+        Publish(topic, msg);
+    }
+    /**
+     * @brief 从第2个子主题发布消息。第一个子主题被自动设置为客户端ID。
+     * 禁止主题以斜杠开头
+     *
+     * @param topic 主题
+     * @param buff 载荷数组的指针
+     * @param length 载荷长度
+     */
+    void PublishFrom_2th_SubTopic(String topic, uint8_t *buff, uint32_t length)
+    {
+        topic = GetClientId() + "/" + topic;
+        Publish(topic, buff, length);
+    }
     void Publish(String topic, String msg);
     void Publish(String topic, uint8_t *buff, uint32_t length);
     void ConnectToMQTTServer(void);
     bool Subscribe(String topic);
-    String FormateMqttContext(char *topic, uint8_t *payload, unsigned int length);
+    //获取客户端ID
+    String GetClientId()
+    {
+        return "esp32-" + WiFi.macAddress();
+    }
 
+    /**
+     * @brief 接口
+     *
+     */
 protected:
     virtual void OnConnected(void) = 0; //连接成功后被调用
     //收到订阅的主题的数据时被回调
