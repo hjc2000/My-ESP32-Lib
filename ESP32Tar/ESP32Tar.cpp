@@ -56,6 +56,23 @@ void ESP32Tar::OnReceive(Queue<uint8_t> &data)
     }
     case 2:
     {
+        float temp;
+        uint8_t *pTempBuff = (uint8_t *)&temp;
+        if (data.count())
+        {
+            Serial.println("不为空");
+            Serial.println(data.count());
+            for (int i = 0; i < sizeof(float); i++)
+            {
+                pTempBuff[i] = data.pop();
+            }
+            Serial.print("收到温度2：");
+            Serial.println(temp);
+        }
+        else
+        {
+            Serial.println("队列为空");
+        }
     }
     }
 }
