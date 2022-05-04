@@ -30,49 +30,23 @@ void ESP32Tar::OnReceive(Queue<uint8_t> &data)
 {
     switch (data.pop())
     {
-    case 1: //接收温度
+    case 1:
     {
-        uint16_t payload;
-        uint8_t *pPayloadBytes = (uint8_t *)(&payload);
-        pPayloadBytes[0] = data.pop();
-        pPayloadBytes[1] = data.pop();
-        auto f_getDoubleTemperature = [](uint16_t payload) -> double
-        {
-            payload &= 0x07ff;
-            return payload / 16.0;
-        };
-        double temperature;
-        if ((int16_t)payload >= 0)
-        {
-            temperature = f_getDoubleTemperature(payload);
-        }
-        else
-        {
-            temperature = -f_getDoubleTemperature(payload);
-        }
-        Serial.print("收到温度：");
-        Serial.println(temperature);
-        pMqttClient->PublishFrom_2th_SubTopic("temperature", (uint8_t *)&temperature, 8);
+        break;
     }
-    case 2:
+    case 2: //接收温度
     {
         float temp;
         uint8_t *pTempBuff = (uint8_t *)&temp;
-        if (data.count())
+        for (int i = 0; i < sizeof(float); i++)
         {
-            Serial.println("不为空");
-            Serial.println(data.count());
-            for (int i = 0; i < sizeof(float); i++)
-            {
-                pTempBuff[i] = data.pop();
-            }
-            Serial.print("收到温度2：");
-            Serial.println(temp);
+            pTempBuff[i] = data.pop();
         }
-        else
-        {
-            Serial.println("队列为空");
-        }
+        double dTemp = temp;
+        Serial.print("收到温度：");
+        Serial.println(temp);
+        pMqttClient->PublishFrom_2th_SubTopic("temperature", (uint8_t *)&dTemp, sizeof(double));
+        break;
     }
     }
 }
