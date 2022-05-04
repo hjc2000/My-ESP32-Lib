@@ -11,3 +11,6 @@
 [submodule "Delegate"]
 	path = Delegate
 	url = https://github.com/hjc2000/Delegate.git
+[submodule "queue"]
+	path = queue
+	url = https://github.com/sdesalas/Arduino-Queue.h.git
