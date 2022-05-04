@@ -66,6 +66,6 @@ void TestMQTTClient::InitCommandMap(void)
 {
     m_commandMap["msp"] = [](uint8_t *payload, uint32_t length) -> void
     {
-        pTar->sendData(payload, length);
+        pTar->sendData(1, payload, length);
     };
 }
