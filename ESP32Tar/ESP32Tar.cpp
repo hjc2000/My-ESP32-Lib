@@ -17,7 +17,7 @@ void ESP32Tar::handle(void *pParam)
     while (1)
     {
         espTar.loop();
-        vTaskDelay(pdMS_TO_TICKS(1000)); //休息1秒
+        vTaskDelay(pdMS_TO_TICKS(100));
     }
 }
 
@@ -32,12 +32,12 @@ void ESP32Tar::ReceiveTemperature(Queue<uint8_t> &data)
     double dTemp = temp;
     Serial.print("收到温度：");
     Serial.println(temp);
-    pMqttClient->PublishFrom_2th_SubTopic("temperature", (uint8_t *)&dTemp, sizeof(double));
+    pMqttClient->PublishFrom_3th_SubTopic("temperature", (uint8_t *)&dTemp, sizeof(double));
 }
 void ESP32Tar::ReceiveLedState(Queue<uint8_t> &data)
 {
     uint8_t state = data.pop();
-    pMqttClient->PublishFrom_2th_SubTopic("LedState", &state, 1);
+    pMqttClient->PublishFrom_3th_SubTopic("LedState", &state, 1);
 }
 
 /**

@@ -25,9 +25,9 @@ public:
      * @param topic 主题
      * @param msg 字符串形式的载荷
      */
-    void PublishFrom_2th_SubTopic(String topic, String msg)
+    void PublishFrom_3th_SubTopic(String topic, String msg)
     {
-        topic = GetClientId() + "/" + topic;
+        topic = GetClientId() + "/out/" + topic;
         Publish(topic, msg);
     }
     /**
@@ -38,9 +38,9 @@ public:
      * @param buff 载荷数组的指针
      * @param length 载荷长度
      */
-    void PublishFrom_2th_SubTopic(String topic, uint8_t *buff, uint32_t length)
+    void PublishFrom_3th_SubTopic(String topic, uint8_t *buff, uint32_t length)
     {
-        topic = GetClientId() + "/" + topic;
+        topic = GetClientId() + "/out/" + topic;
         Publish(topic, buff, length);
     }
     void Publish(String topic, String msg);

@@ -31,16 +31,13 @@ void TestMQTTClient::OnConnected(void)
  */
 void TestMQTTClient::OnReceive(char *topic, uint8_t *payload, unsigned int length)
 {
-    if (length) //如果载荷长度大于0
+    String topicStr = String(topic);
+    StringSplitter subTopics(topicStr, '/', 10);
+    int index = 2; //第0个子主题为客户端ID，第1个子主题为"in"，所以从2开始
+    auto it = m_commandMap.find(subTopics.getItemAtIndex(index++));
+    if (it != m_commandMap.end()) //如果在map中找到处理该子主题的函数
     {
-        String topicStr = String(topic);
-        StringSplitter subTopics(topicStr, '/', 10);
-        int index = 2; //第0个子主题为客户端ID，第1个子主题为"in"，所以从2开始
-        auto it = m_commandMap.find(subTopics.getItemAtIndex(index++));
-        if (it != m_commandMap.end()) //如果在map中找到处理该子主题的函数
-        {
-            (it->second)(payload, length);
-        }
+        (it->second)(payload, length);
     }
 }
 
@@ -48,9 +45,15 @@ void TestMQTTClient::InitCommandMap(void)
 {
     m_commandMap["set_LED_state"] = [](uint8_t *payload, uint32_t length) -> void
     {
-        vector<uint8_t> data;
-        data.push_back(1); //表示写LED
-        data.push_back(payload[0]);
-        pTar->sendData(1, data);
+        if (length >= 1)
+        {
+            uint8_t data[2] = {1, payload[0]};
+            pTar->sendData(1, data, sizeof(data));
+        }
+    };
+    m_commandMap["read_LED_state"] = [](uint8_t *payload, uint32_t length) -> void
+    {
+        uint8_t data = 0;
+        pTar->sendData(1, &data, 1);
     };
 }
