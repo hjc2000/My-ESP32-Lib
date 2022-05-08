@@ -49,8 +49,8 @@ void TestMQTTClient::InitCommandMap(void)
     m_commandMap["set_LED_state"] = [](uint8_t *payload, uint32_t length) -> void
     {
         vector<uint8_t> data;
-        data.push_back(1); //功能码
         data.push_back(1); //表示写LED
         data.push_back(payload[0]);
-        };
+        pTar->sendData(1, data);
+    };
 }
