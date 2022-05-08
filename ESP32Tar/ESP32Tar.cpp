@@ -21,6 +21,25 @@ void ESP32Tar::handle(void *pParam)
     }
 }
 
+void ESP32Tar::ReceiveTemperature(Queue<uint8_t> &data)
+{
+    float temp;
+    uint8_t *pTempBuff = (uint8_t *)&temp;
+    for (int i = 0; i < sizeof(float); i++)
+    {
+        pTempBuff[i] = data.pop();
+    }
+    double dTemp = temp;
+    Serial.print("收到温度：");
+    Serial.println(temp);
+    pMqttClient->PublishFrom_2th_SubTopic("temperature", (uint8_t *)&dTemp, sizeof(double));
+}
+void ESP32Tar::ReceiveLedState(Queue<uint8_t> &data)
+{
+    uint8_t state = data.pop();
+    pMqttClient->PublishFrom_2th_SubTopic("LedState", &state, 1);
+}
+
 /**
  * @brief 串口收到数据后会被调用
  *
@@ -30,22 +49,14 @@ void ESP32Tar::OnReceive(Queue<uint8_t> &data)
 {
     switch (data.pop())
     {
-    case 1:
+    case 1: // LED
     {
+        ReceiveLedState(data);
         break;
     }
     case 2: //接收温度
     {
-        float temp;
-        uint8_t *pTempBuff = (uint8_t *)&temp;
-        for (int i = 0; i < sizeof(float); i++)
-        {
-            pTempBuff[i] = data.pop();
-        }
-        double dTemp = temp;
-        Serial.print("收到温度：");
-        Serial.println(temp);
-        pMqttClient->PublishFrom_2th_SubTopic("temperature", (uint8_t *)&dTemp, sizeof(double));
+        ReceiveTemperature(data);
         break;
     }
     }

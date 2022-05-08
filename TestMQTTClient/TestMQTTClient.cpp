@@ -16,17 +16,7 @@ TestMQTTClient::TestMQTTClient(void)
 void TestMQTTClient::OnConnected(void)
 {
     //连接成功后订阅主题
-    if (m_pPubSubClient->connected())
-    {
-        if (Subscribe(GetClientId() + "/command/#"))
-        {
-            Serial.println("订阅成功");
-        }
-        else
-        {
-            Serial.println("订阅失败");
-        }
-    }
+    Subscribe(GetClientId() + "/in/#");
 }
 
 /**
@@ -41,31 +31,26 @@ void TestMQTTClient::OnConnected(void)
  */
 void TestMQTTClient::OnReceive(char *topic, uint8_t *payload, unsigned int length)
 {
-    String topicStr = String(topic);
-    StringSplitter subTopics(topicStr, '/', 10);
-    int count = subTopics.getItemCount();
-    if (count >= 3)
+    if (length) //如果载荷长度大于0
     {
-        //至少要3级子主题
-        int index = 0;
-        if (subTopics.getItemAtIndex(index++) == GetClientId())
+        String topicStr = String(topic);
+        StringSplitter subTopics(topicStr, '/', 10);
+        int index = 2; //第0个子主题为客户端ID，第1个子主题为"in"，所以从2开始
+        auto it = m_commandMap.find(subTopics.getItemAtIndex(index++));
+        if (it != m_commandMap.end()) //如果在map中找到处理该子主题的函数
         {
-            if (subTopics.getItemAtIndex(index++) == "command")
-            {
-                auto it = m_commandMap.find(subTopics.getItemAtIndex(index++));
-                if (it != m_commandMap.end())
-                {
-                    (it->second)(payload, length);
-                }
-            }
+            (it->second)(payload, length);
         }
     }
 }
 
 void TestMQTTClient::InitCommandMap(void)
 {
-    m_commandMap["msp"] = [](uint8_t *payload, uint32_t length) -> void
+    m_commandMap["set_LED_state"] = [](uint8_t *payload, uint32_t length) -> void
     {
-        pTar->sendData(1, payload, length);
-    };
+        vector<uint8_t> data;
+        data.push_back(1); //功能码
+        data.push_back(1); //表示写LED
+        data.push_back(payload[0]);
+        };
 }
