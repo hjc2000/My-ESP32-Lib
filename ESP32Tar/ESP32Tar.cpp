@@ -6,8 +6,8 @@ ESP32Tar *pTar = nullptr;
 ESP32Tar::ESP32Tar(void) : UartTar(&Serial2)
 {
     pTar = this;
-    Serial2.begin(9600);
-    xTaskCreate(handle, "", 5000, this, 1, nullptr);
+    Serial2.begin(115200);
+    xTaskCreate(handle, "ESP32Tar", 5000, this, 1, nullptr);
 }
 
 void ESP32Tar::handle(void *pParam)
@@ -17,7 +17,7 @@ void ESP32Tar::handle(void *pParam)
     while (1)
     {
         espTar.loop();
-        vTaskDelay(pdMS_TO_TICKS(100));
+        vTaskDelay(1);
     }
 }
 

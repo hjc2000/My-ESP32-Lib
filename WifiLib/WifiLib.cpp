@@ -42,6 +42,6 @@ void ConnectWifi::connectThread(void *pObj)
             // WiFi.begin("Tenda_082840", "123456789");
             WiFi.begin(pThis->m_ssid.c_str(), pThis->m_password.c_str());
         }
-        vTaskDelay(pdMS_TO_TICKS(5000));
+        vTaskDelay(5000);
     }
 }

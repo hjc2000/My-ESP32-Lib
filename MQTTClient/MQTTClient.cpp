@@ -19,7 +19,7 @@ MQTTClient::MQTTClient(void)
     };
     m_pPubSubClient->setCallback(fun);
     //创建新线程，用来执行一些必须循环执行的任务
-    xTaskCreate(LoopThread, "", 5000, this, 1, &m_hLoopThread);
+    xTaskCreate(LoopThread, "MQTTClient", 5000, this, 1, &m_hLoopThread);
 }
 
 //析构函数
@@ -47,7 +47,7 @@ void MQTTClient::ConnectToMQTTServer(void)
                 {
                     return true;
                 }
-                vTaskDelay(pdMS_TO_TICKS(2000));
+                vTaskDelay(2000);
             }
             return false;
         };
@@ -83,7 +83,7 @@ void MQTTClient::LoopThread(void *pObj)
         {
             pThis->ConnectToMQTTServer();
         }
-        vTaskDelay(pdMS_TO_TICKS(100));
+        vTaskDelay(1);
     }
 }
 
