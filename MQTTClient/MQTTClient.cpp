@@ -18,6 +18,7 @@ MQTTClient::MQTTClient(void)
         OnReceive(topic, payload, length);
     };
     m_pPubSubClient->setCallback(fun);
+    m_pPubSubClient->setKeepAlive(5);
     //创建新线程，用来执行一些必须循环执行的任务
     xTaskCreate(LoopThread, "MQTTClient", 5000, this, 1, &m_hLoopThread);
 }
@@ -34,20 +35,22 @@ MQTTClient::~MQTTClient(void)
 //该方法用于连接到MQTT服务器
 void MQTTClient::ConnectToMQTTServer(void)
 {
+    String clientId = GetClientId();
     /*不能在wifi没有连接的情况下连接MQTT*/
     if (WiFi.status() == WL_CONNECTED)
     {
-        String clientId = GetClientId();
         //尝试进行数次连接并返回结果
         auto tryConnect = [this, clientId]() -> bool
         {
+            String willTopic = clientId + "/out/IsOnline";
+            String willMsg = "false"; //表示不在线
             for (uint8_t i = 0; i < 5; i++)
             {
-                if (m_pPubSubClient->connect(clientId.c_str(), "hjc", "123456"))
+                if (m_pPubSubClient->connect(clientId.c_str(), "hjc", "123456", willTopic.c_str(), 1, true, willMsg.c_str(), false))
                 {
                     return true;
                 }
-                vTaskDelay(2000);
+                vTaskDelay(4000);
             }
             return false;
         };
@@ -64,7 +67,6 @@ void MQTTClient::ConnectToMQTTServer(void)
         }
     }
 }
-
 /*该线程用来检查连接是否断开，断开则重连以及执行mqtt协议底层的一些
 工作，例如接收和发送、保持心跳*/
 void MQTTClient::LoopThread(void *pObj)
@@ -86,19 +88,16 @@ void MQTTClient::LoopThread(void *pObj)
         vTaskDelay(1);
     }
 }
-
 //向MQTT服务器发布消息
 void MQTTClient::Publish(String topic, String msg)
 {
-    m_pPubSubClient->publish(topic.c_str(), msg.c_str());
+    m_pPubSubClient->publish(topic.c_str(), msg.c_str(), true);
 }
-
 //向MQTT服务器发布消息
 void MQTTClient::Publish(String topic, uint8_t *buff, uint32_t length)
 {
-    m_pPubSubClient->publish(topic.c_str(), buff, length);
+    m_pPubSubClient->publish(topic.c_str(), buff, length, true);
 }
-
 //订阅主题
 bool MQTTClient::Subscribe(String topic)
 {

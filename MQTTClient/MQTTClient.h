@@ -19,7 +19,8 @@ public:
     MQTTClient(void);
     ~MQTTClient(void);
     /**
-     * @brief 从第2个子主题发布消息。第一个子主题被自动设置为客户端ID。
+     * @brief 从第3个子主题发布消息。第一个子主题被自动设置为客户端ID。
+     * 第二个子主题被设置为 out
      * 禁止主题以斜杠开头
      *
      * @param topic 主题

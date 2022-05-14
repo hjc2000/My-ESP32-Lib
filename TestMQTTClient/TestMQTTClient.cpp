@@ -16,6 +16,7 @@ TestMQTTClient::TestMQTTClient(void)
 void TestMQTTClient::OnConnected(void)
 {
     //连接成功后订阅主题
+    PublishFrom_3th_SubTopic("IsOnline", "true");
     Subscribe(GetClientId() + "/in/#");
 }
 
@@ -56,7 +57,12 @@ void TestMQTTClient::InitCommandMap(void)
     };
     m_commandMap["read_LED_state"] = [](uint8_t *payload, uint32_t length) -> void
     {
-        uint8_t data = 0;
-        pTar->sendData(1, &data, 1);
+        uint8_t readLedState = 0;
+        pTar->sendData(1, &readLedState, 1);
+    };
+    m_commandMap["get_online_state"] = [this](uint8_t *payload, uint32_t length) -> void
+    {
+        Serial.println("收到获取在线状态的请求");
+        PublishFrom_3th_SubTopic("IsOnline", "true");
     };
 }

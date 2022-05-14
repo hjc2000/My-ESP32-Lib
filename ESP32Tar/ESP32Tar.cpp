@@ -32,7 +32,7 @@ void ESP32Tar::ReceiveTemperature(Queue<uint8_t> &data)
     double dTemp = temp;
     Serial.print("收到温度：");
     Serial.println(temp);
-    pMqttClient->PublishFrom_3th_SubTopic("temperature", (uint8_t *)&dTemp, sizeof(double));
+    pMqttClient->PublishFrom_3th_SubTopic("Temperature", (uint8_t *)&dTemp, sizeof(double));
 }
 void ESP32Tar::ReceiveLedState(Queue<uint8_t> &data)
 {
